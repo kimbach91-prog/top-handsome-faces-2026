@@ -1,0 +1,34 @@
+name: HQ media transport test
+
+on:
+  push:
+    branches: ["hq-assets-final"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch Bách Lâm HQ from signed media transport
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://media.canva.com/v2/image-resize/format:JPG/height:1402/quality:95/uri:ifs%3A%2F%2FM%2F105c18f3-0523-496a-bedf-34b9fd0d9d50/watermark:F/width:1122?csig=AAAAAAAAAAAAAAAAAAAAAOg9GOU0Y5JVlzaQHe0JBC0DvTbyusn1EcWie6AZuzu6&exp=1788286746&osig=AAAAAAAAAAAAAAAAAAAAAN0rt_lpPbXlON8xbHEOGyBdxE4_cSJilYxNp1bM63FF&signer=media-rpc&x-canva-quality=thumbnail'
+          curl -fL --retry 2 "$URL" -o /tmp/bach-lam-hq.jpg
+          file /tmp/bach-lam-hq.jpg
+          python - <<'PY'
+          from PIL import Image
+          im=Image.open('/tmp/bach-lam-hq.jpg')
+          print('SIZE', im.size, 'FORMAT', im.format)
+          assert im.width >= 1000 and im.height >= 1200, im.size
+          PY
+          cp /tmp/bach-lam-hq.jpg assets/bach-lam-hq.jpg
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/bach-lam-hq.jpg
+          git commit -m 'Test HQ media transport' || true
+          git push origin HEAD:hq-assets-final
