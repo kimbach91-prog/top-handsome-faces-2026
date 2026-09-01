@@ -1,0 +1,1 @@
+The prior JPG upload path corrupted/truncated some browser-decodable image payloads. Repair uses new WebP filenames and cache-busted HTML so old CDN/browser objects cannot be reused.
