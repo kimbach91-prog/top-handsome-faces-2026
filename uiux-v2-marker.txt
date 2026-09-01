@@ -1,0 +1,1 @@
+UI/UX v2 rebuild staged 2026-09-01. Typography unified for Vietnamese; portrait cards and square boards separated; deploy workflow will no longer mutate HTML/CSS during build.
