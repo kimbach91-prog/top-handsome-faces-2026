@@ -23,14 +23,37 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Prepare repaired static build
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in index.html en.html; do
+            sed -i 's/\.jpg/\.webp/g' "$file"
+          done
+          cat >> style.css <<'CSS'
+
+          /* Visual integrity repair: 2026-09-01 */
+          #gallery,#lineup,#pairs,#sources,#faq { scroll-margin-top: 96px; }
+          .gallery-item img { display:block; width:100%; height:auto !important; object-fit:cover; }
+          .card-portrait img { aspect-ratio:4/5; object-fit:cover; }
+          .collage img { aspect-ratio:1/1; object-fit:cover; }
+          .section-head h2,.split h2 { font-size:clamp(2rem,4vw,3.6rem); }
+          @media (max-width:640px) {
+            .section-head h2,.split h2 { font-size:clamp(2rem,10vw,3rem); }
+          }
+          CSS
+
       - name: Configure and enable Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
+
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
+
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
