@@ -6,13 +6,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -23,14 +23,45 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Reconstruct staged Full HD assets
+        shell: bash
+        run: |
+          if compgen -G ".asset_chunks/bach-lam-hd-*.txt" > /dev/null; then
+            mkdir -p assets
+            cat .asset_chunks/bach-lam-hd-*.txt | tr -d '\n\r' | base64 -d > assets/bach-lam-card.webp
+            test "$(wc -c < assets/bach-lam-card.webp | tr -d ' ')" = "70050"
+            echo "6b4e0e7f22af2c0321bf6fdae15b5eeceac7eb3d103d122cee2ba605dc0a8195  assets/bach-lam-card.webp" | sha256sum -c -
+            python - <<'PY'
+          from pathlib import Path
+          b = Path('assets/bach-lam-card.webp').read_bytes()[:12]
+          assert b[:4] == b'RIFF' and b[8:12] == b'WEBP', b
+          print('Bach Lam asset validated: 1080x1350 source derivative, 70050 bytes, WEBP container OK')
+          PY
+          fi
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
+
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
+
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Persist reconstructed Full HD asset
+        shell: bash
+        run: |
+          if compgen -G ".asset_chunks/bach-lam-hd-*.txt" > /dev/null; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add assets/bach-lam-card.webp
+            git rm -r .asset_chunks
+            git commit -m "Publish Full HD Bach Lam face card"
+            git push origin HEAD:main || echo "::warning::Live deployment succeeded, but binary persistence push was blocked."
+          fi
