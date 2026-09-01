@@ -1,0 +1,1 @@
+Repairing corrupted image assets with verified source files. This marker can be removed after the visual audit passes.
