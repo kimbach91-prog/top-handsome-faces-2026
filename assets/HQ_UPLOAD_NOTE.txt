@@ -1,0 +1,1 @@
+HQ migration uses web-optimized sources derived directly from the user-provided 1122x1402 / 1254x1254 originals. Target display assets are 640x800 portrait and proportional square equivalents, preserving the visible face-card artwork without cropping.
