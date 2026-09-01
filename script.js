@@ -1,1 +1,18 @@
-const bar=document.getElementById('progressBar');addEventListener('scroll',()=>{const h=document.documentElement;const d=h.scrollHeight-h.clientHeight;bar.style.width=(d?Math.min(100,h.scrollTop/d*100):0)+'%';},{passive:true});
+(() => {
+  const dialog = document.getElementById('lightbox');
+  const image = document.getElementById('lightboxImage');
+  if (!dialog || !image) return;
+  document.querySelectorAll('.image-open').forEach((button) => {
+    button.addEventListener('click', () => {
+      image.src = button.dataset.full || button.querySelector('img')?.src || '';
+      image.alt = button.querySelector('img')?.alt || '';
+      if (typeof dialog.showModal === 'function') dialog.showModal();
+    });
+  });
+  dialog.querySelector('.lightbox-close')?.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (event) => {
+    const rect = dialog.getBoundingClientRect();
+    const outside = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+    if (outside) dialog.close();
+  });
+})();
