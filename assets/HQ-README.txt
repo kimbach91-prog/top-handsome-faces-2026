@@ -1,0 +1,1 @@
+HQ images are being published to the existing WebP asset paths so the HTML does not need another layout rewrite.
