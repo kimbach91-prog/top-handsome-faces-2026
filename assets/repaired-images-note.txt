@@ -1,0 +1,1 @@
+Next deploy will use new .webp asset filenames generated from the seven source images re-sent by the user, preventing reuse of corrupted JPG cache objects.
