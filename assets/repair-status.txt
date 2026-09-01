@@ -1,0 +1,1 @@
+Binary replacement in progress. Old .jpg files remain temporarily for rollback; repaired page will reference new .webp names.
