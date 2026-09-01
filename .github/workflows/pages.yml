@@ -35,11 +35,28 @@ jobs:
 
           /* Visual integrity repair: 2026-09-01 */
           #gallery,#lineup,#pairs,#sources,#faq { scroll-margin-top: 96px; }
+          .gallery-grid {
+            display:flex !important;
+            flex-wrap:wrap;
+            justify-content:center;
+            align-items:flex-start;
+            gap:1rem;
+          }
+          .gallery-item,.card-portrait,.collage,.featured {
+            flex:0 0 calc((100% - 3rem)/4);
+            grid-column:auto !important;
+            align-self:flex-start;
+            transform:none !important;
+          }
           .gallery-item img { display:block; width:100%; height:auto !important; object-fit:cover; }
           .card-portrait img { aspect-ratio:4/5; object-fit:cover; }
           .collage img { aspect-ratio:1/1; object-fit:cover; }
           .section-head h2,.split h2 { font-size:clamp(2rem,4vw,3.6rem); }
+          @media (max-width:900px) {
+            .gallery-item,.card-portrait,.collage,.featured { flex-basis:calc((100% - 1rem)/2); }
+          }
           @media (max-width:640px) {
+            .gallery-item,.card-portrait,.collage,.featured { flex-basis:100%; }
             .section-head h2,.split h2 { font-size:clamp(2rem,10vw,3rem); }
           }
           CSS
