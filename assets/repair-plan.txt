@@ -1,0 +1,1 @@
+Do not judge image integrity by workflow success alone. Replacement assets are verified locally and will be committed as byte-preserving Git blobs.
